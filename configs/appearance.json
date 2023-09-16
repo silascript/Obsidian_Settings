@@ -1,0 +1,10 @@
+{
+  "accentColor": "#167fd0",
+  "baseFontSize": 20,
+  "interfaceFontFamily": "ChiuKong Gothic CL,更紗黑體 UI CL,Noto Sans CJK SC",
+  "textFontFamily": "ChiuKong Gothic CL,更紗黑體 UI CL,Noto Sans CJK SC",
+  "monospaceFontFamily": "等距更紗黑體 CL,Noto Sans Mono CJK SC",
+  "cssTheme": "Minimal",
+  "showViewHeader": true,
+  "theme": "obsidian"
+}

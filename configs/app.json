@@ -1,0 +1,17 @@
+{
+  "strictLineBreaks": true,
+  "showFrontmatter": true,
+  "readableLineLength": false,
+  "livePreview": false,
+  "defaultViewMode": "preview",
+  "vimMode": true,
+  "newFileLocation": "current",
+  "alwaysUpdateLinks": true,
+  "useMarkdownLinks": true,
+  "attachmentFolderPath": "./attachments",
+  "newLinkFormat": "relative",
+  "showLineNumber": true,
+  "foldHeading": true,
+  "showInlineTitle": false,
+  "autoPairMarkdown": true
+}
