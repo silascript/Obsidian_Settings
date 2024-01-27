@@ -33,7 +33,7 @@ function validate_dir(){
 # 检测库的路径
 # 0 存在
 # 1 不存在
-function validate_VaultPath(){
+function validate_vault_path(){
 
 	# 库的路径
 	local vault_root=$1
@@ -86,18 +86,17 @@ function delete_vault_configdir(){
 	local vault_path=$1
 
 	local vconfig_dir=".obsidian"
-
-	validate_VaultPath $vault_path
-	local vault_exists=$?
-
+	
+	# 检测 vault 路径是否存在
+	local vault_exists=$(validate_vault_path $vault_path)
+	# 不存在
 	if [ $vault_exists != 0 ];then
 		echo -e "\e[92m $vault_path \e[96m不存在，删除失败！\n \e[0m"
 		return	
 	fi
 	
 	# 检测 Vault 下的 .obsidian 目录是否存在
-	validate_vault_configdir $vault_path
-	local vault_configdir_exists=$?
+	local vault_configdir_exists=$(validate_vault_configdir $vault_path)
 
 	# echo -e "\e[93m$exists_result \n \e[0m"
 	# echo $exists_result
@@ -112,14 +111,16 @@ function delete_vault_configdir(){
 	if [[ ${vault_path: -1} != */ ]];then
 		vault_path=$vault_path/	
 	fi
-	
+
+	local vault_configdir_full_path=$vault_path$vconfig_dir
+
 	# 删除 .obsidian 目录
-	rm -rf $vault_path$vconfig_dir
+	rm -rf $vault_configdir_full_path
 
 	if [  $? -eq 0 ];then
-		echo -e "\e[93m $vault_configdir \e[96m删除成功！\n \e[0m"
+		echo -e "\e[93m $vault_configdir_full_path \e[96m删除成功！\n \e[0m"
 	else
-		echo -e "\e[92m $vault_configdir \e[96m删除失败！\n \e[0m"
+		echo -e "\e[92m $vault_configdir_full_path \e[96m删除失败！\n \e[0m"
 	fi
 
 }
@@ -132,8 +133,7 @@ function reset(){
 	local vault_path=$1
 	
 	# 检测 Vault 路径
-	validate_VaultPath $vault_path
-	local vp_result=$?
+	local vp_result=$(validate_vault_path $vault_path)
 
 	# echo -e "\e[96m$vp_result \n \e[0m"
 	
@@ -142,10 +142,19 @@ function reset(){
 		echo -e "\e[93m$vault_path \e[96m不存在！ \n \e[0m"
 		return
 	fi
-
 	# 如果 Vault 存在
-	echo -e "\e[92m$vault_path \e[96m存在！ \n \e[0m"
+	# echo -e "\e[92m$vault_path \e[96m存在！ \n \e[0m"
 
+	# 检测 vault 目录下是否存在 .obsidian 配置目录
+	local v_cd_r=$(validate_vault_configdir $vault_path)
+
+	if [[ $v_cd_r != 0 ]];then
+		echo -e "\e[93m $vault_path \e[96m不存在\e[93m.obsidian \e[96m配置目录！\e[0m"
+		return
+	fi
+
+	# 删除 .obsidian 目录
+	delete_vault_configdir $vault_path
 }
 
 
@@ -164,10 +173,10 @@ function reset(){
 # echo $?
 
 
-# 测试 validate_VaultPath 函数
+# 测试 validate_vault_path 函数
 # v_path=~/MyNotes/Test_Vault/test01
 # v_path=~/MyNotes/Test_Vault/test02
-# r2=$(validate_VaultPath $v_path)
+# r2=$(validate_vault_path $v_path)
 # echo $r2
 
 
@@ -186,6 +195,7 @@ function reset(){
 # reset $1
 
 # d_path=~/MyNotes/Test_Vault/test01
+# d_path=~/MyNotes/Test_Vault/test02
 # reset $d_path
 
 
