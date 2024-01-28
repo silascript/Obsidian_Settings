@@ -1,0 +1,12 @@
+
+# 不包括https://github.com/ 这个前缀
+
+
+denolehov/obsidian-git
+platers/obsidian-linter
+mgmeyers/obsidian-style-settings
+lukeleppan/better-word-count
+
+
+pfrankov/obsidian-colored-tags
+
