@@ -12,20 +12,29 @@ function get_dl_url() {
 	# echo $json_path
 
 	# 从github的releases json文件中获取 main.js manifest.json styles.css的地址
-	# local dl_file_addr=$(curl $json_path | jq -r '.assets[] | .browser_download_url | select ( contains("main.js") or contains("manifest.json") or contains("styles.css") )')
+	# local dl_file_addr=$(curl $json_path | jq -r '.assets[] | .browser_download_url | select ( contains("main.js") or contains("manifest.json") or contains("styles.css") ) ')
+	# 取值并输出成数组
+	local dl_file_addr_arr=$(curl $json_path | jq -r '.assets[] | .browser_download_url | select ( contains("main.js") or contains("manifest.json") or contains("styles.css") ) ')
 	# 将获取到的字符串构建成一个列表
-	local dl_file_addr_list=($(curl $json_path | jq -r '.assets[] | .browser_download_url | select ( contains("main.js") or contains("manifest.json") or contains("styles.css") )'))
+	# local dl_file_addr_list=($(curl $json_path | jq -r '.assets[] | .browser_download_url | select ( contains("main.js") or contains("manifest.json") or contains("styles.css") )'))
 
 	# echo $dl_file_addr
 
+	# 判断字符串长度是丰大于0
 	# if [[ -n $dl_file_addr ]]; then
+
 	# 判断列表长度是否大于0
 	# 即检测是否取到文件地址
-	if [[ ${#dl_file_addr_list[@]} -gt 0 ]]; then
-		# echo $dl_file_addr
+	# if [[ ${#dl_file_addr_list[@]} -gt 0 ]]; then
 
-		echo ${dl_file_addr_list[@]}
-		# echo ${#dl_file_addr_list[@]}
+	# 判断数组长度
+	if [[ ${#dl_file_addr_arr[@]} -gt 0 ]]; then
+
+		# 返回数组
+		echo $dl_file_addr_arr
+
+		# 返回列表
+		# echo ${dl_file_addr_list[@]}
 
 		# 将字符串按空格分割成数组
 		# local addr_arr=($dl_file_addr)
@@ -33,7 +42,8 @@ function get_dl_url() {
 		# for addr_temp in ${addr_arr[@]}; do
 		# 	echo $addr_temp
 		# done
-
+		# 返回数组
+		# echo ${addr_arr[@]}
 	else
 		echo -e "\e[92m 取不到文件地址！\n \e[0m"
 	fi
@@ -55,10 +65,20 @@ function get_dl_url() {
 
 # 从manifest.json文件中获取id值
 # 这个id值是这个插件的插件目录名
-# function get_plugins_id() {
-# }
+function get_plugins_id() {
+	# manifest.json 文件
+	local json_file=$1
 
-# -------------------------------------------- #
+	if [[ ! -e $json_file ]]; then
+		echo -e "\e[93m $json_file \e[92m文件不存在！\n \e[0m"
+	fi
 
-get_dl_url $1
-# get_dl_url "https://api.github.com/repos/cogscides/obsidian-keyboard-analyzer/releases/latest"
+}
+
+# -----------------------测试--------------------- #
+dl_arr=$(get_dl_url $1)
+# echo ${dl_arr[@]}
+
+for addr_temp in ${dl_arr[@]}; do
+	echo $addr_temp
+done
