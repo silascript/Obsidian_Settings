@@ -1,6 +1,6 @@
-# ----------------------------------------------------------- #
-# ----------------------构建插件函数脚本--------------------- #
-# ----------------------------------------------------------- #
+#          ╭──────────────────────────────────────────────────────────╮
+#          │					构建插件函数脚本                      │
+#          ╰──────────────────────────────────────────────────────────╯
 
 # -------------------------函数定义区------------------------ #
 
@@ -21,6 +21,7 @@ function download_plugin_release_json() {
 	# 核心地址
 	local core_address=$1
 
+	# 把前后的"/"去掉
 	local account=${core_address%%/*}
 	local p_name=${core_address##*/}
 
@@ -62,7 +63,8 @@ function download_file_core() {
 	# 存放文件名
 	# local dl_file_name=$3
 
-	# 判断目录路径是否以 / 结尾
+	# 判断下载的目录路径是否以 / 结尾
+	# 结尾没有 / 就加上 /
 	if [[ ! "$dl_dir_path" =~ /$ ]]; then
 		# 没有就加上 /
 		dl_dir_path="$dl_dir_path/"
@@ -93,60 +95,63 @@ function download_file_proxy() {
 	download_file_core $proxy_path$s_dl_addr $dl_dir_path
 }
 
-# 下载插件必须的文件
-# 一个插件目录中有 main.js manifest.json styles.css
+# release json 文件解析器
+# 一个插件目录中有 main.js manifest.json
 # main.js 和 mainfest.json 这两个文件是必须的，style.css 可选，有的插件是没有的
 # 构建前必须已经下载了相应的 release json 文件，插件那三个文件的下载地址都在这个json中
 # 参数：release json 文件
-function download_plugin_files() {
+function release_json_parser() {
 
-	# 目录名
-	# 此名称即作为插件目录名
 	# 同时也是json文件的文件名
-	local plugin_name=$1
-	local plugin_json="$1.json"
+	local plugin_json=$1
 
 	# 检测 json 文件是否存在
-	if [[ ! -f "$cache_path/$plugin_json" ]]; then
-		echo -e "\e[93m $plugin_json \e[96m不存在！\n \e[0m"
-		return
-	fi
+	# if [[ ! -f "$plugin_json" ]]; then
+	# 	echo -e "\e[93m $plugin_json \e[96m不存在！\n \e[0m"
+	# 	return
+	# fi
 
 	# echo $plugin_json
 	# 从json文件获取文件下载地址，并将其存放至数据数组中
 	# main.js manifest.json styles.css 下载地址
-	local json_data_arr=($(jq -r '.assets[] | .browser_download_url | select ( contains("main.js") or contains("manifest.json") or contains("styles.css") )' $cache_path/$plugin_json))
+	local dl_file_addr=$(curl $json_path | jq -r '.assets[] | .browser_download_url | select ( contains("main.js") or contains("manifest.json") or contains("styles.css") ) ')
+
+	# 返回数组
+	# 实际返回的是带空格的字符串
+	echo ${dl_file_addr[@]}
 
 	# 判断数组长度
-	if [[ ${#json_data_arr[@]} -le 0 ]]; then
-		echo -e "\e[93m $plugin_json \e[96m没数据！\n \e[0m"
-		return
+	# 即是否取到文件地址值
+	# if [[ ${#dl_file_addr[@]} -gt 0 ]]; then
+	# 	# 返回数组
+	# 	# 实际返回的是带空格的字符串
+	# 	echo ${dl_file_addr[@]}
+	# else
+	# 	echo -e "\e[93m 取不到文件地址！\n \e[0m"
+	# fi
+
+}
+
+# 从manifest.json文件中获取id值
+# 这个id值是这个插件的插件目录名
+function get_plugins_id() {
+	# manifest.json 文件
+	local json_file=$1
+
+	if [[ ! -e $json_file ]]; then
+		echo -e "\e[93m $json_file \e[92m文件不存在！\n \e[0m"
+	else
+		# 取文件名
+		local fileName=${json_file##*\/}
+		if [[ $fileName != "manifest.json" ]]; then
+			echo -e "\e[93m $json_file \e[92m不是 manifest.json 文件！\n e[0m"
+		else
+			# 获取 id
+			local idvalue=$(curl $json_file | jq -r '.id')
+			echo $idvalue
+		fi
+
 	fi
-
-	# 创建插件目录
-	if [[ ! -d "$cache_path/$plugin_name" ]]; then
-		mkdir $cache_path/$plugin_name
-	fi
-
-	# echo ${#json_data_arr[@]}
-	# echo ${#json_data_arr[*]}
-
-	# for i in ${!json_data_arr[@]}
-	# do
-	# echo ${json_data_arr[$i]}
-	# done
-
-	# 遍历数组并下载相应的文件
-	for temp in ${json_data_arr[*]}; do
-		# echo $temp
-		# 获取文件名
-		local file_name=${temp##*/}
-		# 下载
-		# echo -e "\e[96m开始下载 \e[92m$file_name \e[96m... \e[0m"
-		# wget -O $cache_path/$plugin_name/$file_name $temp
-		# wget -P $cache_path/$plugin_name/ $temp
-		download_file_proxy $temp $cache_path/$plugin_name
-	done
 
 }
 
