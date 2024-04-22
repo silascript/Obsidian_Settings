@@ -163,20 +163,19 @@ function build_plugin() {
 	# 账号/库名
 	local account_repository=$1
 
-	# 获取库名作为插件 json文件名及插件的目录名
-	local p_name=${account_repository##*/}
+	#
+	# local p_name=${account_repository##*/}
 
-	# 下载 release json文件
-	download_plugin_release_json $account_repository
+	# 前缀
+	local prefix_address="https://api.github.com/repos/"
 
-	# 判断 release json 文件是否下载成功
-	if [[ ! -f "$cache_path/$p_name.json" ]]; then
-		echo -e "\e[93m $p_name.json \e[96m不存在，可能下载失败！ \e[96m"
-	fi
+	# 后缀
+	local suffix_address="/releases/latest"
+
+	# 解析 release json文件
+	local dl_addr_str=$(release_json_parser $prefix_address$account_repository$suffix_address)
 
 	# 下载插件必备文件
-	# 参数是 github 库名，也是插件目录的目录名
-	download_plugin_files $p_name
 
 }
 
