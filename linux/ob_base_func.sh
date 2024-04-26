@@ -47,15 +47,54 @@ function validate_vault_path() {
 	echo $vr
 }
 
-# 检测 Vault 中的.obsidian目录存在
+# 构建 Vault 的配置目录路径
+# 参数：
+# 1. Vault 根路径
+# 2. 配置目录名
+function build_config_path() {
+
+	# Vault 根路径
+	local vault_rpath=$1
+
+	# 检测 vault 路径是否是/结尾
+	# 如果没有/结尾，就给它加上
+	if [[ ${vault_rpath: -1} != */ ]]; then
+		vault_rpath=$vault_rpath/
+	fi
+
+	# echo $vault_rpath
+
+	# vault 默认配置目录名 .obsidian
+	local configdir_default_name=".obsidian"
+
+	# 如果有第个参数，那就是自定义的配置目录名
+	if [[ $# -gt 1 ]]; then
+		configdir_default_name=$2
+	fi
+
+	# echo $configdir_default_name
+
+	# vault 配置目录完整路径
+	local config_full_path=$vault_rpath$configdir_default_name
+
+	# 返回构建好的配置目录路径
+	echo $config_full_path
+}
+
+# 检测 Vault 中的 配置目录存在
+# 默认检测 .obsidian 目录
 # 参数：Vault 根路径
 function validate_vault_configdir() {
 
 	# vault 根路径
 	local vault_path=$1
-	# vault 的配置目录.obsidian
+	# vault 默认配置目录名 .obsidian
 	local configdir_name=".obsidian"
 
+	# 如果有第个参数，那就是自定义的配置目录名
+	if [[ $# -gt 1 ]]; then
+		$configdir_name=$2
+	fi
 	# 检测 Vault 路径
 	local vp_r=$(validate_dir $vault_path)
 
@@ -65,22 +104,37 @@ function validate_vault_configdir() {
 		return 1
 	fi
 
-	# 检测 vault 路径是否是/结尾
-	# 如果没有/结尾，就给它加上
-	if [[ ${vault_path: -1} != */ ]]; then
-		vault_path=$vault_path/
-	fi
-
-	# vault 配置目录完整路径
-	local configdir_path=$vault_path$configdir_name
+	# 构建 配置目录完整路径
+	# 构建配置目录函数至少要传一个参数，即 Vault 根路径
+	# 如果没有第二个参数，即没有配置目录名 就使用默认配置目录名 .obsidian
+	local configdir_path=$(build_config_path $vault_path)
 
 	# echo $configdir_path
 
-	# return $(validate_dir $configdir_path)
+	# 检测配置目录路径
 	local v_r=$(validate_dir $configdir_path)
 	# 返回检测结果
 	# 如果检测通过返回 200
 	echo $v_r
+
+}
+
+# 删除 .obsidian 目录
+# 参数为 Vault 根路径
+function delete_obconfigdir() {
+
+	local config_dir_p=$1
+
+	local v_r=$(validate_vault_configdir $config_dir_p)
+
+	if [[ $v_r != "200" ]]; then
+		echo $v_r
+		return 1
+	fi
+
+	# 删除目录
+	# rm -rf $config_dir_p
+	echo $?
 
 }
 
@@ -91,25 +145,24 @@ function validate_vault_configdir() {
 # echo $r_1
 # echo $?
 
-# d_path=~/MyNotes/Test_Vault/test01
-# d_path=~/MyNotes/Test_Vault/test02
-# validate_dir $d_path
-# r1=$(validate_dir $d_path)
-r1=$(validate_vault_configdir $1)
-echo $r1
-# echo $?
-
-# 测试 validate_vault_path 函数
-# v_path=~/MyNotes/Test_Vault/test01
-# v_path=~/MyNotes/Test_Vault/test02
-# r2=$(validate_vault_path $v_path)
-# echo $r2
+# 测试构建配置目录函数
+# 构建配置目录函数有两参数：1. Vault 根路径 2. 配置目录名
+# 如果第二个参数即配置目录名省略，将使用默认配置目录名 .obsidian
+# c_p=$(build_config_path $1)
+c_p=$(build_config_path $1 $2)
+echo $c_p
 
 # 检测 Vault 下的 .obsidian
 # validate_vault_configdir $1
-# echo $?
+# v_r=$(validate_vault_configdir $1)
+# echo $v_r
 
 # d_path=~/MyNotes/Test_Vault/test01
 # d_path=~/MyNotes/Test_Vault/test02
 # d_r=$(validate_vault_configdir $d_path)
+# d_r=$(validate_vault_configdir $1)
+# echo $d_r
+
+# 删除配置目录.obsidian
+# d_r=$(delete_obconfigdir $1)
 # echo $d_r
