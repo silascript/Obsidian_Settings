@@ -83,7 +83,9 @@ function build_config_path() {
 
 # 检测 Vault 中的 配置目录存在
 # 默认检测 .obsidian 目录
-# 参数：Vault 根路径
+# 参数：
+# 1. Vault 根路径
+# 2. 配置目录名，可选，如果没有，就是默认的 .obsidian
 function validate_vault_configdir() {
 
 	# vault 根路径
@@ -91,9 +93,9 @@ function validate_vault_configdir() {
 	# vault 默认配置目录名 .obsidian
 	local configdir_name=".obsidian"
 
-	# 如果有第个参数，那就是自定义的配置目录名
+	# 如果有第2个参数，那就是自定义的配置目录名
 	if [[ $# -gt 1 ]]; then
-		$configdir_name=$2
+		configdir_name=$2
 	fi
 	# 检测 Vault 路径
 	local vp_r=$(validate_dir $vault_path)
@@ -107,7 +109,7 @@ function validate_vault_configdir() {
 	# 构建 配置目录完整路径
 	# 构建配置目录函数至少要传一个参数，即 Vault 根路径
 	# 如果没有第二个参数，即没有配置目录名 就使用默认配置目录名 .obsidian
-	local configdir_path=$(build_config_path $vault_path)
+	local configdir_path=$(build_config_path $vault_path $configdir_name)
 
 	# echo $configdir_path
 
@@ -119,22 +121,58 @@ function validate_vault_configdir() {
 
 }
 
-# 删除 .obsidian 目录
+# 删除配置目录
 # 参数为 Vault 根路径
 function delete_obconfigdir() {
 
-	local config_dir_p=$1
+	local vault_rootpath=$1
 
-	local v_r=$(validate_vault_configdir $config_dir_p)
+	# local v_r=$(validate_vault_configdir $config_dir_p)
+	# 检测 Vault 根路径是否存在
+	local v_result=$(validate_vault_path $vault_rootpath)
 
-	if [[ $v_r != "200" ]]; then
-		echo $v_r
+	if [[ $v_result != "200" ]]; then
+		echo $v_result
 		return 1
 	fi
 
-	# 删除目录
-	# rm -rf $config_dir_p
-	echo $?
+	# 构建 Vault 配置目录路径
+	# 默认目录名为 .obsidian
+	local conf_dir_name=".obsidian"
+
+	# 如果有第2个参数，那就是自定义的配置目录名
+	if [[ $# -gt 1 ]]; then
+		conf_dir_name=$2
+	fi
+
+	# echo $conf_dir_name
+
+	# 检测配置目录路径
+	# 如果通过检测就构建完整的配置目录路径，然后删除配置目录
+	# 第1个参数为 Vault 路径；第2个参数为配置目录的目录名
+	local v_conf_r=$(validate_vault_configdir $vault_rootpath $conf_dir_name)
+	# echo $v_conf_r
+	if [[ $v_conf_r != "200" ]]; then
+		echo $v_conf_r
+		return 1
+	else
+		# 构建配置目录的完整路径
+		local config_fpath=$(build_config_path $vault_rootpath $conf_dir_name)
+
+		# 删除目录
+		# echo -e "\e[92m \e[37m$config_fpath \e[92m目录！\n \e[0m"
+		echo -e "\e[96m将删除 \e[92m$config_fpath \e[96m目录... \n \e[0m"
+		rm -r $config_fpath
+		# 再检测配置目录是否还存在
+		local deled_v_r=$(validate_vault_configdir $vault_rootpath $conf_dir_name)
+
+		if [[ $deled_v_r != "200" ]]; then
+			echo -e "\e[92m$config_fpath \e[96m目录删除成功！\n \e[0m"
+		else
+			# echo -e "\e[93m$deled_v_r \n \e[0m"
+			echo -e "\e[93m$config_fpath \e[96m目录删除失败！\n \e[0m"
+		fi
+	fi
 
 }
 
@@ -149,8 +187,8 @@ function delete_obconfigdir() {
 # 构建配置目录函数有两参数：1. Vault 根路径 2. 配置目录名
 # 如果第二个参数即配置目录名省略，将使用默认配置目录名 .obsidian
 # c_p=$(build_config_path $1)
-c_p=$(build_config_path $1 $2)
-echo $c_p
+# c_p=$(build_config_path $1 $2)
+# echo $c_p
 
 # 检测 Vault 下的 .obsidian
 # validate_vault_configdir $1
@@ -164,5 +202,5 @@ echo $c_p
 # echo $d_r
 
 # 删除配置目录.obsidian
-# d_r=$(delete_obconfigdir $1)
-# echo $d_r
+# delete_obconfigdir $1
+# delete_obconfigdir $1 $2
