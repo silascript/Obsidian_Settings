@@ -167,10 +167,13 @@ function delete_obconfigdir() {
 		local deled_v_r=$(validate_vault_configdir $vault_rootpath $conf_dir_name)
 
 		if [[ $deled_v_r != "200" ]]; then
-			echo -e "\e[92m$config_fpath \e[96m目录删除成功！\n \e[0m"
+			# echo -e "\e[92m$config_fpath \e[96m目录删除成功！\n \e[0m"
+			echo "200"
+			return
 		else
 			# echo -e "\e[93m$deled_v_r \n \e[0m"
 			echo -e "\e[93m$config_fpath \e[96m目录删除失败！\n \e[0m"
+			return 1
 		fi
 	fi
 
