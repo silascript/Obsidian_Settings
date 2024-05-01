@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "H:\\DevWorkspace\\Obsidian_Settings\\win\\OBSettings\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{8F418003-7016-4A6C-A177-E0AF27F13B33}|OBSettingsUI\\OBSettingsUI.csproj|h:\\devworkspace\\obsidian_settings\\win\\obsettings\\obsettingsui\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}",
+      "RelativeMoniker": "D:0:0:{8F418003-7016-4A6C-A177-E0AF27F13B33}|OBSettingsUI\\OBSettingsUI.csproj|solutionrelative:obsettingsui\\mainwindow.xaml||{F11ACC28-31D1-4C80-A34B-F4E09D3D753C}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{8F418003-7016-4A6C-A177-E0AF27F13B33}|OBSettingsUI\\OBSettingsUI.csproj|h:\\devworkspace\\obsidian_settings\\win\\obsettings\\obsettingsui\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{8F418003-7016-4A6C-A177-E0AF27F13B33}|OBSettingsUI\\OBSettingsUI.csproj|solutionrelative:obsettingsui\\mainwindow.xaml.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
@@ -19,12 +23,24 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "MainWindow.xaml",
+              "DocumentMoniker": "H:\\DevWorkspace\\Obsidian_Settings\\win\\OBSettings\\OBSettingsUI\\MainWindow.xaml",
+              "RelativeDocumentMoniker": "OBSettingsUI\\MainWindow.xaml",
+              "ToolTip": "H:\\DevWorkspace\\Obsidian_Settings\\win\\OBSettings\\OBSettingsUI\\MainWindow.xaml",
+              "RelativeToolTip": "OBSettingsUI\\MainWindow.xaml",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.003549|",
+              "WhenOpened": "2024-05-01T13:53:21.924Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "MainWindow.xaml.cs",
               "DocumentMoniker": "H:\\DevWorkspace\\Obsidian_Settings\\win\\OBSettings\\OBSettingsUI\\MainWindow.xaml.cs",
               "RelativeDocumentMoniker": "OBSettingsUI\\MainWindow.xaml.cs",
               "ToolTip": "H:\\DevWorkspace\\Obsidian_Settings\\win\\OBSettings\\OBSettingsUI\\MainWindow.xaml.cs",
               "RelativeToolTip": "OBSettingsUI\\MainWindow.xaml.cs",
-              "ViewState": "AQIAABYAAAAAAAAAAAA2wBUAAAAIAAAA",
+              "ViewState": "AQIAAHYAAAAAAAAAAAAxwI0AAAAAAAAA",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2024-04-30T16:13:47.322Z",
               "EditorCaption": ""

@@ -5,8 +5,16 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:OBSettingsUI"
         mc:Ignorable="d"
-        Title="MainWindow" Height="450" Width="800">
-    <Grid>
+        Title="Obsidian设置小工具" Height="450" Width="1226">
+    <Grid Margin="0,0,0,-14" HorizontalAlignment="Center" Width="1273">
+        <Label Content="请输入Vault库的根路径：" Name="lb_input_vroot" HorizontalAlignment="Left" Margin="107,87,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="txb_vault_root" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="399,85,0,0" TextWrapping="Wrap" Text="TextBox"  Width="510"/>
+        <Button Content="选择Vault根目录" Name="btn_select_vroot" HorizontalAlignment="Left" Margin="935,85,0,0" VerticalAlignment="Top" Click="btn_select_vroot_Click"/>
+        <Button Content="清理输入" Name="btn_clear" HorizontalAlignment="Left" Margin="1107,87,0,0" VerticalAlignment="Top" Click="btn_clear_Click"/>
+        <Label Content="请输入配置目录名：" Name="lb_config_dir" HorizontalAlignment="Left" Margin="154,132,0,0" VerticalAlignment="Top"/>
+        <TextBox Name="txb_configdirname" HorizontalAlignment="Left" Margin="403,136,0,0" TextWrapping="Wrap" Text=".obsidian" VerticalAlignment="Top" Width="255"/>
+        <Button Name="btn_select_confdirname" Content="选择配置目录" HorizontalAlignment="Left" Margin="708,138,0,0" VerticalAlignment="Top" Click="btn_select_confdirname_Click"/>
+        <Button Name="btn_reset_confdirname" Content="重置配置目录名" HorizontalAlignment="Left" Margin="883,138,0,0" VerticalAlignment="Top" Click="btn_reset_confdirname_Click" RenderTransformOrigin="0.293,0.189"/>
 
     </Grid>
 </Window>
