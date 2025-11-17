@@ -1,0 +1,15 @@
+
+# 这是一个jq示例代码库
+
+
+# 从json文件获取文件下载地址，并将其存放至数据数组中
+# main.js manifest.json styles.css 下载地址
+local dl_file_addr=$(curl $json_path | jq -r '.assets[] | .browser_download_url | select ( contains("main.js") or contains("manifest.json") or contains("styles.css") ) ')
+
+# 根据 id 取出相应的插件对象
+# cat community-plugins.json | jq '.[]| select(.id=="better-word-count")'
+# 进一步取出repo属性值，这个就是插件仓库地址：账号/仓库名
+# cat community-plugins.json | jq -r '.[]| select(.id=="better-word-count") | .repo'
+
+# 根据vault的目录路径获取vault的ID
+cat .config/obsidian/obsidian.json | jq -r '.vaults | map_values(select(.path=="/home/silascript/MyNotes/WritingExericse")) | keys'

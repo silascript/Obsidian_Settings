@@ -7,6 +7,19 @@
 # 缓存目录
 cache_path=.Cache
 
+# 使用 community-plugins.json 文件获取插件信息地址来下载插件
+# 取出的地址值形式：账号/仓库名
+function get_plugin_address_by_plistfile() {
+
+	# 根据 id 取出相应的插件对象
+	# cat community-plugins.json | jq '.[]| select(.id=="better-word-count")'
+	# 进一步取出repo属性值，这个就是插件仓库地址：账号/仓库名
+	# cat community-plugins.json | jq -r '.[]| select(.id=="better-word-count") | .repo'
+
+	local plugins_list_file_addr="https://github.com/obsidianmd/obsidian-releases/blob/master/community-plugins.json"
+
+}
+
 # 下载插件 release 的json文件
 # https://api.github.com/repos/账号/库名/releases/latest
 # 账号/库名 由plugin_github_address.txt这个文件读取得到
@@ -19,6 +32,7 @@ function download_plugin_release_json() {
 	local suffix_address="/releases/latest"
 
 	# 核心地址
+	# 账号/库名
 	local core_address=$1
 
 	# 把前后的"/"去掉
