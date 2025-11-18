@@ -13,3 +13,27 @@ local dl_file_addr=$(curl $json_path | jq -r '.assets[] | .browser_download_url 
 
 # 根据vault的目录路径获取vault的ID
 cat .config/obsidian/obsidian.json | jq -r '.vaults | map_values(select(.path=="/home/silascript/MyNotes/WritingExericse")) | keys'
+
+
+# 测试 https://api.github.com/repos/lukeleppan/better-word-count/releases
+# release json的地址最后不能有 /
+# 
+# 最新版 https://api.github.com/repos/lukeleppan/better-word-count/releases/latest
+# tag_name 记录的是版本号
+# 所以可以查询指定版本的release json文件
+# https://api.github.com/repos/lukeleppan/better-word-count/releases/tags/tag_name
+
+
+# 获取 releases 下 几个文件：
+# main.js
+# manifest.json
+# styles.css
+# 这是obsidian插件构成的文件，其中前两个必须有，styles.css可选
+# curl releases的json文件地址 | jq -r '.assets[] | .browser_download_url | select ( contains("main.js") or contains("manifest.json") or contains("styles.css") ) '
+# curl https://api.github.com/repos/lukeleppan/better-word-count/releases/tags/0.10.0 | jq -r '.assets[] | .browser_download_url | select ( contains("main.js") or contains("manifest.json") or contains("styles.css") ) '
+# 结果会如下：
+# https://github.com/lukeleppan/better-word-count/releases/download/0.10.0/main.js
+# https://github.com/lukeleppan/better-word-count/releases/download/0.10.0/manifest.json
+# https://github.com/lukeleppan/better-word-count/releases/download/0.10.0/styles.css
+
+
