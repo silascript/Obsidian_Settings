@@ -134,8 +134,10 @@ function download_file_proxy() {
 # 参数：release json 文件
 function release_json_parser() {
 
-	# 同时也是json文件的文件名
+	# plugin release的json文件
 	local plugin_json=$1
+
+	# echo $plugin_json
 
 	# 检测 json 文件是否存在
 	# if [[ ! -f "$plugin_json" ]]; then
@@ -146,7 +148,7 @@ function release_json_parser() {
 	# echo $plugin_json
 	# 从json文件获取文件下载地址，并将其存放至数据数组中
 	# main.js manifest.json styles.css 下载地址
-	local dl_file_addr=$(curl $json_path | jq -r '.assets[] | .browser_download_url | select ( contains("main.js") or contains("manifest.json") or contains("styles.css") ) ')
+	local dl_file_addr=$(curl $plugin_json | jq -r '.assets[] | .browser_download_url | select ( contains("main.js") or contains("manifest.json") or contains("styles.css") ) ')
 
 	# 返回数组
 	# 实际返回的是带空格的字符串
@@ -195,17 +197,33 @@ function build_plugin() {
 	# 账号/库名
 	local account_repository=$1
 
+	# tag名称
+	local tagname=$2
+
 	#
 	# local p_name=${account_repository##*/}
 
 	# 前缀
 	local prefix_address="https://api.github.com/repos/"
-
 	# 后缀
+	# 默认是最新版
 	local suffix_address="/releases/latest"
+	# 如果传了第二个参数
+	# 使用指定版本
+	if [[ -n $tagname ]]; then
+		suffix_address="/releases/tags/$tagname"
+	fi
 
+	# echo $suffix_address
+
+	# release地址
+	local release_addr=$prefix_address$account_repository$suffix_address
+
+	# echo $release_addr
 	# 解析 release json文件
-	local dl_addr_str=$(release_json_parser $prefix_address$account_repository$suffix_address)
+	local dl_addr_str=$(release_json_parser $release_addr)
+
+	echo $dl_addr_str
 
 	# 下载插件必备文件
 
@@ -225,7 +243,9 @@ function build_plugin() {
 
 # 通过插件id从插件列表文件中获取插件的仓库地址
 # test_pid="better-word-count"
-# get_plugin_repo_addr_by_pid_from_plistfile $test_pid
+# plugin_repo=$(get_plugin_repo_addr_by_pid_from_plistfile $test_pid)
 
 # 检测插件构建函数
 # build_plugin denolehov/obsidian-git
+# build_plugin $plugin_repo
+# build_plugin $plugin_repo 0.10.0
