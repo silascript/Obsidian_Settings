@@ -7,16 +7,34 @@
 # 缓存目录
 cache_path=.Cache
 
-# 使用 community-plugins.json 文件获取插件信息地址来下载插件
-# 取出的地址值形式：账号/仓库名
-function get_plugin_address_by_plistfile() {
+# 通过插件id获取插件，从community-plugins.json 文件获取插件仓库 地址
+# 返回值 仓库地址值形式：账号/仓库名
+function get_plugin_repo_addr_by_pid_from_plistfile() {
 
 	# 根据 id 取出相应的插件对象
 	# cat community-plugins.json | jq '.[]| select(.id=="better-word-count")'
 	# 进一步取出repo属性值，这个就是插件仓库地址：账号/仓库名
 	# cat community-plugins.json | jq -r '.[]| select(.id=="better-word-count") | .repo'
 
-	local plugins_list_file_addr="https://github.com/obsidianmd/obsidian-releases/blob/master/community-plugins.json"
+	# 插件 id
+	local plugin_id=$1
+
+	# community-plugin.json默认地址
+	local plist_file_default_addr="https://raw.githubusercontent.com/obsidianmd/obsidian-releases/refs/heads/master/community-plugins.json"
+
+	# community-plugins.json 文件地址
+	# 使用默认地址初始化
+	local plist_file_addr=$plist_file_default_addr
+	# 如果传入的 插件列表文件地址就使用此文件
+	if [[ -e $2 ]]; then
+		plist_file_addr=$2
+	fi
+	# curl https://raw.githubusercontent.com/obsidianmd/obsidian-releases/refs/heads/master/community-plugins.json | jq -r '.[]| select(.id=="better-word-count") | .repo'
+
+	local plugin_repo_addr=$(curl $plist_file_addr | jq --arg pluginid $plugin_id -r '.[]| select(.id==$pluginid) | .repo')
+
+	# 返回插件仓库地址
+	echo "${plugin_repo_addr}"
 
 }
 
@@ -204,6 +222,10 @@ function build_plugin() {
 # 检测下载插件必备文件函数
 # download_plugin_files obsidian1-git
 # download_plugin_files obsidian-git
+
+# 通过插件id从插件列表文件中获取插件的仓库地址
+# test_pid="better-word-count"
+# get_plugin_repo_addr_by_pid_from_plistfile $test_pid
 
 # 检测插件构建函数
 # build_plugin denolehov/obsidian-git
