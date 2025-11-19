@@ -20,12 +20,19 @@ function get_plugin_repo_addr_by_pid_from_plistfile() {
 	# 插件 id
 	local plugin_id=$1
 
+	# echo $plugin_id
+
 	# community-plugin.json默认地址
 	local plist_file_default_addr="https://raw.githubusercontent.com/obsidianmd/obsidian-releases/refs/heads/master/community-plugins.json"
+
+	# echo $plist_file_default_addr
 
 	# community-plugins.json 文件地址
 	# 使用默认地址初始化
 	local plist_file_addr=$plist_file_default_addr
+
+	# echo $plist_file_addr
+
 	# 如果传入的 插件列表文件地址就使用此文件
 	if [[ -e $2 ]]; then
 		plist_file_addr=$2
@@ -35,7 +42,7 @@ function get_plugin_repo_addr_by_pid_from_plistfile() {
 	local plugin_repo_addr=$(curl $plist_file_addr | jq --arg pluginid $plugin_id -r '.[]| select(.id==$pluginid) | .repo')
 
 	# 返回插件仓库地址
-	echo "${plugin_repo_addr}"
+	echo $plugin_repo_addr
 
 }
 
@@ -198,18 +205,21 @@ function get_plugins_id() {
 function build_plugin_by_pid() {
 
 	# 插件将要保存的目录路径
+	# 此路径应该在调用此函数的上层函数检测过路径有效性
+	# 这里是默认目录路径是有效的
 	local plugin_save_path=$1
 
 	# 插件id
-	local pluginId=$2
+	local plugin_id=$2
 
 	# 根据id查询該插件的github的库限定名
 	# 账号/库名
-	local account_repository=$(get_plugin_repo_addr_by_pid_from_plistfile pluginid)
+	local account_repo=$(get_plugin_repo_addr_by_pid_from_plistfile $plugin_id)
+	# echo $account_repo
+
 	# tag名称
 	local tagname=$3
 
-	#
 	# local p_name=${account_repository##*/}
 
 	# 前缀
@@ -226,7 +236,7 @@ function build_plugin_by_pid() {
 	# echo $suffix_address
 
 	# release地址
-	local release_addr=$prefix_address$account_repository$suffix_address
+	local release_addr=$prefix_address$account_repo$suffix_address
 
 	# echo $release_addr
 	# 解析 release json文件
@@ -253,8 +263,12 @@ function build_plugin_by_pid() {
 # 通过插件id从插件列表文件中获取插件的仓库地址
 # test_pid="better-word-count"
 # plugin_repo=$(get_plugin_repo_addr_by_pid_from_plistfile $test_pid)
+# echo $plugin_repo
 
 # 检测插件构建函数
-# build_plugin denolehov/obsidian-git
-# build_plugin $plugin_repo
-# build_plugin $plugin_repo 0.10.0
+# save_path=~/MyNotes/TestV/.obsidian/plugins
+# test_pid="better-word-count"
+# build_plugin_by_pid $save_path $test_pid
+# build_plugin_by_pid $save_path $test_pid
+# build_plugin_by_pid $save_path $test_pid 0.10.0
+# build_plugin_by_pid $plugin_repo 0.10.0
