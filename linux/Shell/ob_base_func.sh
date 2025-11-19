@@ -5,7 +5,7 @@
 # -------------------------函数定义区------------------------ #
 
 # 检测目录是否存在
-# 返回值：0为存在 其余都是有问题的
+# 返回值：200为存在 1是有问题的
 function validate_dir() {
 
 	local dir_path=$1
@@ -86,6 +86,7 @@ function build_config_path() {
 # 参数：
 # 1. Vault 根路径
 # 2. 配置目录名，可选，如果没有，就是默认的 .obsidian
+# 返回值：200是通过检测 如果返回1是没通过检测
 function validate_vault_configdir() {
 
 	# vault 根路径
@@ -179,6 +180,28 @@ function delete_obconfigdir() {
 
 }
 
+# 检测插件存储的目录
+# Obsidian 的插件是放在某个vault的.obsidian/plugins目录
+# 需要检测有两个：.obsidian目录及plugins子目录
+# 参数：目录路径 /xxx/xxx/.../.obsidian/plugins
+# 返回值：200是通过检测 如果返回1是没通过检测
+function validate_plugin_dir() {
+
+	local plugins_dir_path=$1
+
+	# 目录是否存在
+	local dir_validate_result=$(validate_dir $plugins_dir_path)
+
+	if [[ $dir_validate_result != "200" ]]; then
+
+		echo $dir_validate_result
+		return 1
+	else
+		echo "200"
+	fi
+
+}
+
 # -------------------------测试区------------------------ #
 
 # 检测 Vault 路径
@@ -207,3 +230,8 @@ function delete_obconfigdir() {
 # 删除配置目录.obsidian
 # delete_obconfigdir $1
 # delete_obconfigdir $1 $2
+
+# 检测插件目录路径
+# pdir_path=~/MyNotes/TestV/.obsidian
+# echo $pdir_path
+# validate_plugin_dir $pdir_path

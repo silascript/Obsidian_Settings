@@ -40,4 +40,4 @@ function init_default() {
 # ---------------------------------测试区--------------------------------- #
 
 # init_default $1 $2
-init_default
+init_default $@

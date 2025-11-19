@@ -8,6 +8,7 @@
 cache_path=.Cache
 
 # 通过插件id获取插件，从community-plugins.json 文件获取插件仓库 地址
+# 参数：該插件的id
 # 返回值 仓库地址值形式：账号/仓库名
 function get_plugin_repo_addr_by_pid_from_plistfile() {
 
@@ -190,15 +191,23 @@ function get_plugins_id() {
 }
 
 # 构建插件
-# 参数：github 库限定名（账号/库名）
-function build_plugin() {
+# 参数：
+# 1. 插件保存的目录路径，即.obsidian目录下的plugins目录（必要）
+# 2. 插件id 作为此插件目录名（必要）
+# 3. tag名（可选，如果不提供，将使用latest版）
+function build_plugin_by_pid() {
 
-	# github库限定名
+	# 插件将要保存的目录路径
+	local plugin_save_path=$1
+
+	# 插件id
+	local pluginId=$2
+
+	# 根据id查询該插件的github的库限定名
 	# 账号/库名
-	local account_repository=$1
-
+	local account_repository=$(get_plugin_repo_addr_by_pid_from_plistfile pluginid)
 	# tag名称
-	local tagname=$2
+	local tagname=$3
 
 	#
 	# local p_name=${account_repository##*/}
