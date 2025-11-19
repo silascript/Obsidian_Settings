@@ -190,15 +190,37 @@ function validate_plugin_dir() {
 	local plugins_dir_path=$1
 
 	# 目录是否存在
-	local dir_validate_result=$(validate_dir $plugins_dir_path)
+	local path_validate_result=$(validate_dir $plugins_dir_path)
 
-	if [[ $dir_validate_result != "200" ]]; then
-
-		echo $dir_validate_result
+	# 目录是否存在
+	if [[ $path_validate_result != "200" ]]; then
+		echo $path_validate_result
 		return 1
-	else
-		echo "200"
+	# else
+	# 	echo "200"
 	fi
+
+	# 倒数第二节路径名
+	# 应该是 .obsidian
+	local secondtolast_dir=$(echo $plugins_dir_path | awk -F '/' '{print $(NF-1)}')
+	# echo $secondtolast_dir
+
+	if [[ $secondtolast_dir != ".obsidian" ]]; then
+		echo -e "\e[93m $plugins_dir_path \e[96m倒数第二节的目录名不是\e[93m .obsidian\n \e[0m"
+		return 1
+	fi
+
+	# 最后一节路径名
+	# 应该是 plugins
+	local last_dir=$(echo $plugins_dir_path | awk -F '/' '{print $NF}')
+	# echo $last_dir
+	if [[ $last_dir != "plugins" ]]; then
+		echo -e "\e[93m $plugins_dir_path \e[96m最后一节的目录名不是\e[93m plugins\n \e[0m"
+		return 1
+	fi
+
+	# 通过检测
+	echo "200"
 
 }
 
@@ -233,5 +255,7 @@ function validate_plugin_dir() {
 
 # 检测插件目录路径
 # pdir_path=~/MyNotes/TestV/.obsidian
+# pdir_path=~/MyNotes/WritingNotes/.obsidian/themes
+# pdir_path=~/MyNotes/WritingNotes/.obsidian/plugins
 # echo $pdir_path
 # validate_plugin_dir $pdir_path
