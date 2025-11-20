@@ -1,0 +1,2 @@
+# 一些高级或重量级的插件
+templater-obsidian

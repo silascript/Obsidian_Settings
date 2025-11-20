@@ -1,0 +1,4 @@
+# 跟美化相关
+
+obsidian-minimal-settings
+style-text

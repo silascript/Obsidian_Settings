@@ -1,0 +1,27 @@
+# 基础插件id列表
+obsidian-style-settings
+better-word-count
+obsidian-html-tags-autocomplete
+colored-tags
+obsidian-frontmatter-tag-suggest
+obsidian-scroll-to-top-plugin
+obsidian-better-command-palette
+darlal-switcher-plus
+obsidian-file-link
+obsidian-auto-link-title
+cm-chs-patch
+obsidian-show-file-path
+obsidian-completr
+vim-yank-highlight
+tag-summary-plugin
+cmdr
+obsidian-git
+obsidian-linter
+obsidian-quiet-outline
+obsidian-relative-line-numbers
+obsidian-cursor-location-plugin
+obsidian-table-generator
+table-sorting
+file-explorer-note-count
+table-editor-obsidian
+floating-toc

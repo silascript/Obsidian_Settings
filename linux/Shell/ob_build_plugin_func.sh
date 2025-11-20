@@ -137,9 +137,10 @@ function download_file_proxy() {
 
 # release json 文件解析器
 # 一个插件目录中有 main.js manifest.json
-# main.js 和 mainfest.json 这两个文件是必须的，style.css 可选，有的插件是没有的
+# main.js 和 manifest.json 这两个文件是必须的，style.css 可选，有的插件是没有的
 # 构建前必须已经下载了相应的 release json 文件，插件那三个文件的下载地址都在这个json中
 # 参数：release json 文件
+# 返回值：该插件所需文件下载地址数组。至少包括 main.js及manifest.json
 function release_json_parser() {
 
 	# plugin release的json文件

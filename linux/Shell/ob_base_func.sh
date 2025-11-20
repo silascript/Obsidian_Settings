@@ -224,6 +224,44 @@ function validate_plugin_dir() {
 
 }
 
+# 读取插件列表
+# 插件列表中存储的是插件的id值
+# 参数：插件id列表文件路径
+# 返回值：插件id 数组
+function read_plugin_list() {
+
+	# 插件id数组
+	local plugin_id_arr=()
+
+	if [[ $# -eq 0 ]]; then
+		echo -e "\e[93m 至少提供一个插件文件！\n \e[0m"
+		return 1
+	fi
+
+	# 可能有多个插件列表
+	for plugin_list_file in "$@"; do
+
+		# 检测路径是否为空
+		if [ -z $plugin_list_file ]; then
+			echo -e "\e[93m 文件路径不能为空！\n \e[0m"
+			return 1
+		fi
+
+		# 读取
+		if [ -f "$plugin_list_file" ]; then
+			# 过滤掉空行及使用#注释的行
+			for line in $(cat $plugin_list_file | grep -v ^$ | grep -v ^\#); do
+				# 把每行插件id存储进数组中
+				plugin_id_arr+=($line)
+			done
+		fi
+
+	done
+
+	# 返回插件id数组
+	echo ${plugin_id_arr[@]}
+}
+
 # -------------------------测试区------------------------ #
 
 # 检测 Vault 路径
@@ -259,3 +297,9 @@ function validate_plugin_dir() {
 # pdir_path=~/MyNotes/WritingNotes/.obsidian/plugins
 # echo $pdir_path
 # validate_plugin_dir $pdir_path
+
+# 测试读取插件列表函数
+# read_plugin_list ./plugin_list/pluginlist_base.txt
+# read_plugin_list ./plugin_list/pluginlist_base.txt ./plugin_list/pluginlist_plus.txt
+# read_plugin_list ./plugin_list/pluginlist_base.txt ./plugin_list/pluginlist_plus.txt ./plugin_list/pluginlist_style.txt
+# read_plugin_list $@
