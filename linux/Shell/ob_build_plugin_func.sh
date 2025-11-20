@@ -240,11 +240,23 @@ function build_plugin_by_pid() {
 
 	# echo $release_addr
 	# 解析 release json文件
-	local dl_addr_str=$(release_json_parser $release_addr)
+	# 得到插件各文件下载地址数组
+	local dl_addr_arr=$(release_json_parser $release_addr)
 
-	echo $dl_addr_str
+	# echo $dl_addr_str
 
 	# 下载插件必备文件
+	for addr_temp in ${dl_addr_arr[@]}; do
+		# echo -e "$addr_temp \n"
+		# echo $addr_temp
+		# curl --output-dir $plugin_save_path -O $addr_temp
+		# 提取出文件名
+		local file_name=${addr_temp##*/}
+		# echo $file_name
+		# 下载文件
+		wget --no-check-certificate -c -O $plugin_save_path/$file_name $addr_temp
+		# wget --no-check-certificate -O $plugin_save_path/$file_name $addr_temp
+	done
 
 }
 
@@ -266,9 +278,7 @@ function build_plugin_by_pid() {
 # echo $plugin_repo
 
 # 检测插件构建函数
-# save_path=~/MyNotes/TestV/.obsidian/plugins
+# save_path=~/MyNotes/TestV/.obsidian/plugins/better-word-count
 # test_pid="better-word-count"
 # build_plugin_by_pid $save_path $test_pid
-# build_plugin_by_pid $save_path $test_pid
 # build_plugin_by_pid $save_path $test_pid 0.10.0
-# build_plugin_by_pid $plugin_repo 0.10.0
