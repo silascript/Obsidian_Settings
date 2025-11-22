@@ -198,9 +198,10 @@ function get_plugins_id() {
 
 }
 
-# 构建插件
+# 构建安装插件
 # 参数：
-# 1. 插件保存的目录路径，即.obsidian目录下的plugins目录（必要）
+# 1. 插件保存的目录完全路径（必要）
+# 笔记根目录/.obsidian/plugins/插件id/
 # 2. 插件id 作为此插件目录名（必要）
 # 3. tag名（可选，如果不提供，将使用latest版）
 function build_plugin_by_pid() {
@@ -228,7 +229,7 @@ function build_plugin_by_pid() {
 	# 后缀
 	# 默认是最新版
 	local suffix_address="/releases/latest"
-	# 如果传了第二个参数
+	# 如果传了第三个参数
 	# 使用指定版本
 	if [[ -n $tagname ]]; then
 		suffix_address="/releases/tags/$tagname"
@@ -245,6 +246,9 @@ function build_plugin_by_pid() {
 	local dl_addr_arr=$(release_json_parser $release_addr)
 
 	# echo $dl_addr_str
+
+	# 
+
 
 	# 下载插件必备文件
 	for addr_temp in ${dl_addr_arr[@]}; do

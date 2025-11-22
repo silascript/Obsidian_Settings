@@ -50,15 +50,20 @@ function get_plugins_id() {
 
 }
 
+# 使用jq 读取 插件列表
+# function read_pluginlist_by_jq(){
+
+# }
+
 # -----------------------测试--------------------- #
-dl_arr_str=$(get_dl_url $1)
+# dl_arr_str=$(get_dl_url $1)
 # get_dl_url $1
 
 # echo ${dl_arr_str[@]}
 # 转成数组
-arr1=($dl_arr_str)
+# arr1=($dl_arr_str)
 # echo ${arr1[@]}
-echo ${arr1[1]}
+# echo ${arr1[1]}
 
 # for addr_temp in ${dl_arr[@]}; do
 # 	echo $addr_temp

@@ -230,8 +230,8 @@ function validate_plugin_dir() {
 # 返回值：插件id 数组
 function read_plugin_list() {
 
-	# 插件id数组
-	local plugin_id_arr=()
+	# 插件数组
+	local plugin_arr=()
 
 	if [[ $# -eq 0 ]]; then
 		echo -e "\e[93m 至少提供一个插件文件！\n \e[0m"
@@ -252,14 +252,14 @@ function read_plugin_list() {
 			# 过滤掉空行及使用#注释的行
 			for line in $(cat $plugin_list_file | grep -v ^$ | grep -v ^\#); do
 				# 把每行插件id存储进数组中
-				plugin_id_arr+=($line)
+				plugin_arr+=($line)
 			done
 		fi
 
 	done
 
-	# 返回插件id数组
-	echo ${plugin_id_arr[@]}
+	# 返回插件数组
+	echo ${plugin_arr[@]}
 }
 
 # -------------------------测试区------------------------ #
