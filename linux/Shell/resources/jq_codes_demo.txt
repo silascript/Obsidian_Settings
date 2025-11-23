@@ -41,3 +41,9 @@ cat .config/obsidian/obsidian.json | jq -r '.vaults | map_values(select(.path=="
 # https://github.com/lukeleppan/better-word-count/releases/download/0.10.0/styles.css
 
 
+# 生成 .obsidian目录下的community-plugin.json文件
+# 这个文件是记录哪些插件已启用
+# 默认如果只是把插件文件复制到plugins目录下，只是算安装成功，但未启动
+# 注意最后不能有逗号，不然jq什么出错
+#echo '["power-mode","editing-toolbar","mermaid-tools","obsidian-importer","obsidian-better-codeblock","dust-calendar"]' | jq
+echo '["obsidian-style-settings","better-word-count","obsidian-html-tags-autocomplete","colored-tags"]'| jq > ob_plugins.json

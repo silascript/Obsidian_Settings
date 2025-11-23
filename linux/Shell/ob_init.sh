@@ -63,12 +63,24 @@ function install_plugin_batch() {
 
 	# echo ${plugin_arr[@]}
 
+	# 插件id数组
+	local plugin_id_arr=()
+
+	# 插件id 字符
+	local pid_str=""
+
 	# 遍历插件数组
 	for plugin_temp in ${plugin_arr[@]}; do
 		# echo $plugin_temp
 		# 切割出id和版本号
 		local plugin_id="${plugin_temp%:*}"
 		local plugin_version="${plugin_temp##*:}"
+
+		# 将插件id添加进插件id数组中
+		# plugin_id_arr+=($plugin_id)
+
+		# 拼接插件id
+		pid_str+='"'$plugin_id'",'
 
 		# 生成该插件的目录，目录名为插件的id
 		# 插件根目录即 .obsidian/plugins目录 + 插件id目录
@@ -93,16 +105,31 @@ function install_plugin_batch() {
 		# echo "------------"
 	done
 
+	# echo ${plugin_id_arr[@]}
+
+	# echo $pid_str
+	# 去除最后的逗号
+	pid_str=${pid_str%,*}
+	# vault 的配置根目录 .obsidian
+	local vault_config_path=${plugins_root_path%'plugins'*}
+	# echo $vault_config_path
+	local plugin_json=$vault_config_path"community-plugins.json"
+	# echo $plugin_json
+	# echo '['$pid_str']' | jq >$plugin_json
+
+	echo -e "\e[96m 生成 \e[92mcommunity-plugins.json \e[96m文件，用于启用已经构建安装的插件！\n \e[0m"
+	echo '['$pid_str']' | jq >$plugin_json
 	# echo ${plugin_arr[@]}
 
 }
 
 # -------------------------测试区------------------------ #
 
-plugins_arr=()
-pfile_path=./plugin_list/pluginlist_base.txt
+# plugins_arr=()
+# pfile_path=./plugin_list/pluginlist_base.txt
+# pfile_path=./plugin_list/pluginlist_plus.txt
 # pfile_path=./plugin_list/pluginlist_style.txt
-plugins_arr=$(read_plugin_list $pfile_path)
+# plugins_arr=$(read_plugin_list $pfile_path)
 
 # echo ${plugins_arr[@]}
 
@@ -112,5 +139,5 @@ plugins_arr=$(read_plugin_list $pfile_path)
 # install_plugin_batch ~/MyNotes/TestV/ $plugins_arr
 # install_plugin_batch ~/MyNotes/TestV/.obsidian/ $plugins_arr
 # install_plugin_batch ~/MyNotes/TestV/.obsidian/plugins ${plugins_arr[@]}
-install_plugin_batch ~/MyNotes/TestV/.obsidian/plugins ${plugins_arr[@]}
+# install_plugin_batch ~/MyNotes/TestV/.obsidian/plugins ${plugins_arr[@]}
 # install_plugin_batch $@
