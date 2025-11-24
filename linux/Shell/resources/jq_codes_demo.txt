@@ -47,3 +47,8 @@ cat .config/obsidian/obsidian.json | jq -r '.vaults | map_values(select(.path=="
 # 注意最后不能有逗号，不然jq什么出错
 #echo '["power-mode","editing-toolbar","mermaid-tools","obsidian-importer","obsidian-better-codeblock","dust-calendar"]' | jq
 echo '["obsidian-style-settings","better-word-count","obsidian-html-tags-autocomplete","colored-tags"]'| jq > ob_plugins.json
+
+读取community-plugin.json文件，获取出所有已启用的插件id
+cat MyNotes/TestV/.obsidian/community-plugins.json | jq -r '.[]'
+
+

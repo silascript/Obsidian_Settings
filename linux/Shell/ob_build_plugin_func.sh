@@ -247,8 +247,7 @@ function build_plugin_by_pid() {
 
 	# echo $dl_addr_str
 
-	# 
-
+	#
 
 	# 下载插件必备文件
 	for addr_temp in ${dl_addr_arr[@]}; do
@@ -265,15 +264,34 @@ function build_plugin_by_pid() {
 
 }
 
+# 读取 community-plugins.json 文件读取 插件id
+# 参数 community-plugins.json 完整路径
+# 返回值：插件id数组
+function read_using_plugin_json() {
+
+	# community-plugins.json文件路径
+	# 谁调用谁检测路径存在性
+	local cplugin_json_path=$1
+
+	# 插件id 数组
+	local plugin_id_arr=()
+
+	# 读取并取出插件id
+	plugin_id_arr=$(cat $cplugin_json_path | jq -r '.[]')
+
+	# 返回插件id数组
+	echo ${plugin_id_arr[@]}
+}
+
 # -------------------------测试区------------------------ #
 
-# 检测下载 release的json文件函数
+# 测试下载 release的json文件函数
 # download_plugin_release_json "denolehov/obsidian-git"
 # download_plugin_release_json "denolehov/obsidian1-git"
 
-# 检测 download_file_core 函数 download_file_core
+# 测试 download_file_core 函数 download_file_core
 
-# 检测下载插件必备文件函数
+# 测试下载插件必备文件函数
 # download_plugin_files obsidian1-git
 # download_plugin_files obsidian-git
 
@@ -282,8 +300,12 @@ function build_plugin_by_pid() {
 # plugin_repo=$(get_plugin_repo_addr_by_pid_from_plistfile $test_pid)
 # echo $plugin_repo
 
-# 检测插件构建函数
+# 测试插件构建函数
 # save_path=~/MyNotes/TestV/.obsidian/plugins/better-word-count
 # test_pid="better-word-count"
 # build_plugin_by_pid $save_path $test_pid
 # build_plugin_by_pid $save_path $test_pid 0.10.0
+
+# 测试 read_using_plugin_json 函数
+# uplugin_json=~/MyNotes/TestV/.obsidian/community-plugins.json
+# read_using_plugin_json $uplugin_json

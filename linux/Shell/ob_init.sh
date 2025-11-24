@@ -123,6 +123,32 @@ function install_plugin_batch() {
 
 }
 
+# 复制插件配置文件
+# 就是将 预配置好的 data.json 这个文件复制到指定的插件目录中
+function cp_plugin_config() {
+
+	# vault 根目录
+	local vault_root=$1
+
+	local validate_result=$(validate_vault_path $vault_root)
+
+	# 检测 vault 根目录是否存在
+	if [[ $validate_result != "200" ]]; then
+		echo $validate_result
+		return 1
+	fi
+
+	# community-plugins.json 路径
+	# vault根目录/.obsidian/community-plugins.json
+	local plugin_json_path=$vault_root"/.obsidian/community-plugins.json"
+
+	if [[ ! -f $plugin_json_path ]]; then
+		echo -e "\e[93m $plugin_json_path \e[96m文件不存在！\n \e[0m"
+		return 1
+	fi
+
+}
+
 # -------------------------测试区------------------------ #
 
 # plugins_arr=()
@@ -141,3 +167,10 @@ function install_plugin_batch() {
 # install_plugin_batch ~/MyNotes/TestV/.obsidian/plugins ${plugins_arr[@]}
 # install_plugin_batch ~/MyNotes/TestV/.obsidian/plugins ${plugins_arr[@]}
 # install_plugin_batch $@
+
+# 测试 cp_plugin_config 函数
+
+# vault_path=~/MyNotes/TestV2/
+vault_path=~/MyNotes/TestV/
+
+cp_plugin_config $vault_path
