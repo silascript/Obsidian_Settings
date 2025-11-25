@@ -125,10 +125,21 @@ function install_plugin_batch() {
 
 # 复制插件配置文件
 # 就是将 预配置好的 data.json 这个文件复制到指定的插件目录中
+# 参数：
+# 1. vault 根目录
+# 2. 插件配置目录 默认为：configs/plugin_config
 function cp_plugin_config() {
 
 	# vault 根目录
 	local vault_root=$1
+
+	# 插件配置目录
+	local plugin_config_dir=$2
+
+	# 没有传第二参数
+	if [[ $# -lt 2 ]]; then
+		plugin_config_dir=configs/plugin_config
+	fi
 
 	local validate_result=$(validate_vault_path $vault_root)
 
@@ -138,6 +149,10 @@ function cp_plugin_config() {
 		return 1
 	fi
 
+	# 确保目录路径不以/结尾
+	vault_root=${vault_root%/}
+	# echo $vault_root
+
 	# community-plugins.json 路径
 	# vault根目录/.obsidian/community-plugins.json
 	local plugin_json_path=$vault_root"/.obsidian/community-plugins.json"
@@ -146,6 +161,44 @@ function cp_plugin_config() {
 		echo -e "\e[93m $plugin_json_path \e[96m文件不存在！\n \e[0m"
 		return 1
 	fi
+
+	# echo $plugin_json_path
+
+	# 读取 community-plugins.json 文件
+	# 获取已启用的插件id 返回的是一个数组
+	local using_plguin_id_arr=$(read_using_plugin_json $plugin_json_path)
+
+	# echo ${using_plguin_id_arr[@]}
+
+	# 遍历 已启用插件id数组
+	for pid_temp in ${using_plguin_id_arr[@]}; do
+
+		# 拼接出 插件配置目录路径
+		# 默认是在 plugin_config/插件id/
+		local pid_config_dir=$plugin_config_dir"/"$pid_temp
+
+		# 插件目录
+		# vault根目录/.obsidian/plugins/插件id/
+		local plugin_dir=$vault_root"/.obsidian/plugins/"$pid_temp
+
+		# echo $pid_config_dir
+
+		if [[ -d $pid_config_dir ]]; then
+			# data.json文件
+			local data_file=$pid_config_dir"/data.json"
+
+			if [[ -f $data_file ]]; then
+				# 复制 该插件的data.json文件到 .obsidian/plugins/插件id/ 目录下
+				# echo $data_file
+				# echo $plugin_dir
+				cp -v $data_file $plugin_dir
+			else
+				echo -e "\e[93m $data_file \e[96m配置文件不存在，复制该插件配置失败！\n \e[0m"
+			fi
+
+		fi
+
+	done
 
 }
 
@@ -165,12 +218,12 @@ function cp_plugin_config() {
 # install_plugin_batch ~/MyNotes/TestV/ $plugins_arr
 # install_plugin_batch ~/MyNotes/TestV/.obsidian/ $plugins_arr
 # install_plugin_batch ~/MyNotes/TestV/.obsidian/plugins ${plugins_arr[@]}
-# install_plugin_batch ~/MyNotes/TestV/.obsidian/plugins ${plugins_arr[@]}
 # install_plugin_batch $@
 
 # 测试 cp_plugin_config 函数
 
 # vault_path=~/MyNotes/TestV2/
+# vault_path=~/MyNotes/TestV
 vault_path=~/MyNotes/TestV/
 
 cp_plugin_config $vault_path
