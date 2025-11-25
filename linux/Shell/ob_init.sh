@@ -13,14 +13,23 @@ source ./ob_build_plugin_func.sh
 # 参数：
 # 1. vault 路径
 # 2. 插件列表文件路径
-function init_base() {
+# vault 应该关闭安全模式，这样才能安装第三方插件
+function init_base_notheme() {
 
-	# vault 路径
-	local vault_path=$1
+	# vault 根路径
+	local vault_root=$1
 	# 插件列表文件
-	# 文件结构
-	# 插件id:版本号
+	# 文件结构： 插件id:版本号
 	local plugin_list_file=$2
+
+	# 复制核心配置文件到.obsidian 目录中
+	# obsidian核心配置
+	# 参数：
+	# 1. vault 根目录路径
+	# 2. 预配置文件目录路径，可选，省略使用默认值：configs/base
+	cp_core_config $vault_root
+
+	# 安装插件
 
 	# 读取插件列表
 	# 插件数组：插件id:版本号
@@ -29,18 +38,11 @@ function init_base() {
 	# 批量安装插件
 	install_plugin_batch $vault_path ${plugin_arr[@]}
 
-	# 复制配置
-
-	# 复制配置文件到.obsidian 目录中
-
-	# obsidian核心配置
-
-	# 插件配置
 	# 复制插件配置
 	# 参数：
 	# 1. vault 根目录路径
-	# 2. 插件预配置目录，可选，省略的话，默认是 configs/plugin_config
-	cp_plugin_config $vault_path
+	# 2. 插件预配置目录，可选，省略的话，默认值：configs/plugin_config
+	cp_plugin_config $vault_root
 
 }
 
@@ -306,6 +308,14 @@ function cp_plugin_config() {
 # cp_plugin_config $vault_path
 
 # 测试 cp_core_config 函数
-vault_path=~/MyNotes/TestV/
+# vault_path=~/MyNotes/TestV/
 
-cp_core_config $vault_path
+# cp_core_config $vault_path
+
+# 测试 init_base_notheme 函数
+vault_path=~/MyNotes/TestV/
+pfile_path1=./plugin_list/pluginlist_base.txt
+pfile_path2=./plugin_list/pluginlist_plus.txt
+# pfile_path3=./plugin_list/pluginlist_style.txt
+
+init_base_notheme $vault_path $pfile_path1 $pfile_path2

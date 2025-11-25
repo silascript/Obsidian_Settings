@@ -126,6 +126,7 @@ function validate_vault_configdir() {
 # 参数为 Vault 根路径
 function delete_obconfigdir() {
 
+	# vault 根目录路径
 	local vault_rootpath=$1
 
 	# local v_r=$(validate_vault_configdir $config_dir_p)
@@ -146,6 +147,10 @@ function delete_obconfigdir() {
 		conf_dir_name=$2
 	fi
 
+	# 去除目录路径结尾/
+	vault_rootpath=${vault_rootpath%/}
+	conf_dir_name=${conf_dir_name%/}
+
 	# echo $conf_dir_name
 
 	# 检测配置目录路径
@@ -161,16 +166,17 @@ function delete_obconfigdir() {
 		local config_fpath=$(build_config_path $vault_rootpath $conf_dir_name)
 
 		# 删除目录
-		# echo -e "\e[92m \e[37m$config_fpath \e[92m目录！\n \e[0m"
-		echo -e "\e[96m将删除 \e[92m$config_fpath \e[96m目录... \n \e[0m"
+		# echo -e "\e[96m将删除 \e[92m$config_fpath \e[96m目录... \n \e[0m"
+
 		rm -r $config_fpath
 		# 再检测配置目录是否还存在
-		local deled_v_r=$(validate_vault_configdir $vault_rootpath $conf_dir_name)
+		# local deled_v_r=$(validate_vault_configdir $vault_rootpath $conf_dir_name)
 
-		if [[ $deled_v_r != "200" ]]; then
+		# if [[ $deled_v_r != "200" ]]; then
+		if [[ ! -d $config_fpath ]]; then
 			# echo -e "\e[92m$config_fpath \e[96m目录删除成功！\n \e[0m"
 			echo "200"
-			return
+			return 0
 		else
 			# echo -e "\e[93m$deled_v_r \n \e[0m"
 			echo -e "\e[93m$config_fpath \e[96m目录删除失败！\n \e[0m"
