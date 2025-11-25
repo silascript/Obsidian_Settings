@@ -1,10 +1,12 @@
 {
-  "accentColor": "#167fd0",
-  "baseFontSize": 20,
+  "accentColor": "",
+  "baseFontSize": 18,
   "interfaceFontFamily": "ChiuKong Gothic CL,更紗黑體 UI CL,Noto Sans CJK SC",
-  "textFontFamily": "ChiuKong Gothic CL,更紗黑體 UI CL,Noto Sans CJK SC",
+  "textFontFamily": "ChiuKong Gothic CL,Noto Sans CJK SC,更紗黑體 UI CL",
   "monospaceFontFamily": "等距更紗黑體 CL,Noto Sans Mono CJK SC",
-  "cssTheme": "Minimal",
+  "cssTheme": "",
   "showViewHeader": true,
-  "theme": "obsidian"
+  "theme": "obsidian",
+  "nativeMenus": false,
+  "showRibbon": true
 }

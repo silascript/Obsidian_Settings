@@ -18,12 +18,29 @@ function init_base() {
 	# vault 路径
 	local vault_path=$1
 	# 插件列表文件
+	# 文件结构
+	# 插件id:版本号
 	local plugin_list_file=$2
 
+	# 读取插件列表
+	# 插件数组：插件id:版本号
+	local plugin_arr=$(read_plugin_list $plugin_list_file)
+
 	# 批量安装插件
-	install_plugin_batch $vault_path $plugin_list_file
+	install_plugin_batch $vault_path ${plugin_arr[@]}
+
+	# 复制配置
 
 	# 复制配置文件到.obsidian 目录中
+
+	# obsidian核心配置
+
+	# 插件配置
+	# 复制插件配置
+	# 参数：
+	# 1. vault 根目录路径
+	# 2. 插件预配置目录，可选，省略的话，默认是 configs/plugin_config
+	cp_plugin_config $vault_path
 
 }
 
@@ -123,11 +140,62 @@ function install_plugin_batch() {
 
 }
 
+# 复制核心配置文件
+#
+# app.json 主配置
+# appearance.json 外观配置
+# core-plugins-migration.json core-plugins.json 核心插件配置
+# hotkeys.json 快捷键配置
+# 存储位置：vault根目录/.obsidian/ 目录下
+# Shell 脚本预配置目录： configs/base/ 目录下
+# 此函数是将 configs/base/ 目录下预配置文件到制 指定vault的配置目录.obsidian目录下
+# 参数：
+# 1. vault 根目录路径
+# 2. 预配置文件目录路径 默认为 configs/base
+function cp_core_config() {
+
+	# vault 根目录
+	local vault_root=$1
+
+	# 预配置文件目录
+	# 默认是在configs/base 目录下
+	local ob_config_dir=$2
+
+	# 如果没传预配置文件目录，则设置默认的目录
+	# configs/base
+	if [[ $# -lt 2 ]]; then
+		ob_config_dir=configs/base
+	fi
+
+	# 检测 vault 根目录有效性
+	local validate_vault_result=$(validate_vault_path $vault_root)
+
+	if [[ $validate_vault_result != "200" ]]; then
+		echo $validate_vault_result
+		return 1
+	fi
+
+	# 检测预配置目录有效性
+	if [[ ! -d $ob_config_dir ]]; then
+		echo -e "\e[93m $ob_config_dir 目录不存在！\n \e[0m"
+		return 1
+	fi
+
+	# 去除目录路径结尾/
+	vault_root=${vault_root%/}
+	ob_config_dir=${ob_config_dir%/}
+
+	# 复制预配置目录中所有的json配置文件到 vault/.obsidian中
+	local source_file=$ob_config_dir'/*json'
+	# echo $source_file
+	cp -v $source_file $vault_root"/.obsidian"
+}
+
 # 复制插件配置文件
 # 就是将 预配置好的 data.json 这个文件复制到指定的插件目录中
 # 参数：
 # 1. vault 根目录
-# 2. 插件配置目录 默认为：configs/plugin_config
+# 2. 插件预配置目录 默认为：configs/plugin_config
 function cp_plugin_config() {
 
 	# vault 根目录
@@ -137,10 +205,13 @@ function cp_plugin_config() {
 	local plugin_config_dir=$2
 
 	# 没有传第二参数
+	# 即没传插件预配置文件目录
+	# 则设置默认目录 configs/plugin_config
 	if [[ $# -lt 2 ]]; then
 		plugin_config_dir=configs/plugin_config
 	fi
 
+	# 检测vault根目录路径有效性
 	local validate_result=$(validate_vault_path $vault_root)
 
 	# 检测 vault 根目录是否存在
@@ -149,8 +220,14 @@ function cp_plugin_config() {
 		return 1
 	fi
 
+	# 检测预配置目录有效性
+	if [[ ! -d $plugin_config_dir ]]; then
+		echo -e "\e[93m $plugin_config_dir 目录不存在！\n \e[0m"
+		return 1
+	fi
 	# 确保目录路径不以/结尾
 	vault_root=${vault_root%/}
+	plugin_config_dir=${plugin_config_dir%/}
 	# echo $vault_root
 
 	# community-plugins.json 路径
@@ -224,6 +301,11 @@ function cp_plugin_config() {
 
 # vault_path=~/MyNotes/TestV2/
 # vault_path=~/MyNotes/TestV
+# vault_path=~/MyNotes/TestV/
+
+# cp_plugin_config $vault_path
+
+# 测试 cp_core_config 函数
 vault_path=~/MyNotes/TestV/
 
-cp_plugin_config $vault_path
+cp_core_config $vault_path
