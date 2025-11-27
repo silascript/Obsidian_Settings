@@ -10,8 +10,10 @@ function validate_dir() {
 
 	local dir_path=$1
 
+	# echo $dir_path
+
 	# 检测路径是否为空
-	if [ -z $dir_path ]; then
+	if [ -z "$dir_path" ]; then
 		echo -e "\e[93m 路径不能为空！\n \e[0m"
 		return 1
 	fi
@@ -119,6 +121,42 @@ function validate_vault_configdir() {
 	# 返回检测结果
 	# 如果检测通过返回 200
 	echo $v_r
+
+}
+
+# 删除vault
+# ~/.config/obsidian/obsidian.json文件中记录了Obsidian所有的vault
+# 想要目录脱离Obsidian管理，即从vault管理列表中删除，就得对obsidian.json这个文件进行操作
+# 参数：vault 根目录
+function delete_vault() {
+
+	# vault 根目录
+	local vault_root=$1
+
+	# 去除结尾/
+	vault_root=${vault_root%/}
+
+	local json_path="$HOME/.config/obsidian/obsidian.json"
+
+	# echo $vault_root
+
+	# 检测目录是否真存在
+	local validate_vault_result=$(validate_vault_path $vault_root)
+
+	if [[ $validate_vault_result != "200" ]]; then
+		echo $validate_vault_result
+		return 1
+	fi
+
+	# echo $json_path
+
+	# cat "$json_path" | jq -r '.vaults'
+	# cat $json_path | jq --arg path_arg $vault_root '.vaults | map_values(select(.path==$path_arg))'
+	local vault_key=$(cat $json_path | jq --arg path_arg $vault_root -r '.vaults | map_values(select(.path==$path_arg))|keys')
+	vault_key=$(echo $vault_key | jq -r '.[]')
+	echo $vault_key
+
+	cat $json_path | jq --arg v_key "$vault_key" '.| del($v_key)'
 
 }
 
@@ -309,3 +347,6 @@ function read_plugin_list() {
 # read_plugin_list ./plugin_list/pluginlist_base.txt ./plugin_list/pluginlist_plus.txt
 # read_plugin_list ./plugin_list/pluginlist_base.txt ./plugin_list/pluginlist_plus.txt ./plugin_list/pluginlist_style.txt
 # read_plugin_list $@
+
+# 测试 delete_vault 函数
+delete_vault $@

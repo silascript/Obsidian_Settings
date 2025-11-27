@@ -13,3 +13,19 @@
 
 * `config`：文件是Obsidian的相关配置文件
   * `base`：基础配置，用于初始化valut，省动手动配置的麻烦
+
+---
+
+## 相关工具
+
+[Bip901/obsidian-cli](https://github.com/Bip901/obsidian-cli) 是一个Obsidian的CLI工具。
+
+这个工具可以列出、打开和移除Vault的功能：
+
+* `ls`：Lists directories registered as Obsidian vaults.                                                                  
+* `open`：Opens the given directory as an Obsidian vault, registering it if necessary.                                      
+* `rm`：Unregisters the given vault from Obsidian. This does not remove the actual directory.                             
+* `new`：Creates a new Obsidian vault at the given path.
+* `template`：Commands to view and edit vault templates.          
+
+
