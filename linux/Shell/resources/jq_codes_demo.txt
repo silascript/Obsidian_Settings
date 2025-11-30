@@ -57,3 +57,9 @@ cat MyNotes/TestV/.obsidian/community-plugins.json | jq -r '.[]'
 cat ~/.config/obsidian/obsidian.json | jq -r '.vaults|map_values(select(.path=="/home/silascript/MyNotes/TestV"))'
 
 cat ~/.config/obsidian/obsidian.json | jq -r --arg path_arg "$vault_root"  '.vaults|map_values(select(.path==$path_arg))'
+
+# 通过 vault 路径获取相应的 vault id
+cat $HOME/.config/obsidian/obsidian.json | jq -r '.vaults|map_values(select(.path=="/home/silascript/MyNotes/LHP_Note"))|keys[0]'
+
+cat $ob_json | jq -r --arg v_path "$vault_root" '.vaults | map_values(select(.path==$v_path)) | keys[0]'
+

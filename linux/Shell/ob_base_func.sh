@@ -49,6 +49,37 @@ function validate_vault_path() {
 	echo $vr
 }
 
+# 通过 vault 路径获取vault id
+# 参数：vault 目录路径
+# 返回 vault id
+function get_vaultid_by_path() {
+
+	local vault_root=$1
+
+	local ob_json=$HOME/.config/obsidian/obsidian.json
+
+	# echo $vault_root
+
+	# 检测路径有效性
+	local validate_result=$(validate_vault_path $vault_root)
+
+	if [[ $validate_result != "200" ]]; then
+		echo $validate_result
+		return 1
+	fi
+
+	# 去除结尾的/
+	vault_root=${vault_root%/}
+
+	# echo $vault_root
+
+	# 获取 vault id
+	local vault_id=$(cat $ob_json | jq -r --arg v_path "$vault_root" '.vaults | map_values(select(.path==$v_path)) | keys[0]')
+
+	echo $vault_id
+
+}
+
 # 构建 Vault 的配置目录路径
 # 参数：
 # 1. Vault 根路径
@@ -156,7 +187,7 @@ function delete_vault() {
 	vault_key=$(echo $vault_key | jq -r '.[]')
 	echo $vault_key
 
-	cat $json_path | jq --arg v_key "$vault_key" '.| del($v_key)'
+	# cat $json_path | jq --arg v_key "$vault_key" '.| del($v_key)'
 
 }
 
@@ -503,3 +534,6 @@ function read_plugin_list() {
 # vault_path=~/MyNotes/TestV/
 
 # cp_core_config $vault_path
+
+# 测试 get_vaultid_by_path
+# get_vaultid_by_path $@
